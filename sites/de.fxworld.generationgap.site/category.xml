@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.fxworld.generationgap_4.4.2.qualifier.jar" id="de.fxworld.generationgap" version="4.4.2.qualifier">
+      <category name="de.fxworld.generationgap"/>
+   </feature>
+   <feature url="features/de.fxworld.generationgap.headless_4.4.2.qualifier.jar" id="de.fxworld.generationgap.headless" version="4.4.2.qualifier">
+      <category name="de.fxworld.generationgap"/>
+   </feature>
+   <category-def name="de.fxworld.generationgap" label="GenerationGap"/>
+</site>

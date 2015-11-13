@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="de.fxworld.generationgap.properties.PropertyTester"
+            id="de.fxworld.generationgap.propertytester"
+            namespace="de.fxworld.generationgap.ui"
+            properties="hasBuilder"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="de.fxworld.generationgap.ui.properties.GapPropertyPage"
+            id="de.fxworld.generationgap.properties.GenerationGapPropertiesPage"
+            name="Generation Gap">
+         <enabledWhen>
+ 		
+ 			
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="de.fxworld.generationgap.nature">
+                        </test>
+                     </adapt>
+ 		
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.BuildNowCommand"
+            id="de.fxworld.generationgap.buildnowcommand"
+            name="Building with Generation Gap">
+      </command>
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.AddBuilderHandler"
+            id="de.fxworld.generationgap.addbuildercommand"
+            name="Add Builder">
+      </command>
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.RemoveBuilderHandler"
+            id="de.fxworld.generationgap.removebuildercommand"
+            name="Remove Builder">
+      </command>
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.CreateCustomJavaClassHandler"
+            id="de.fxworld.generationgap.createcustomcommand"
+            name="Create Custom Java Class">
+      </command>
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.AddNatureHandler"
+            id="de.fxworld.generationgap.addnaturecommand"
+            name="Add Generation Gap Nature">
+      </command>
+      <command
+            defaultHandler="de.fxworld.generationgap.ui.commands.RemoveNatureHandler"
+            id="de.fxworld.generationgap.removenaturecommand"
+            name="Remove Generation Gap Nature">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <menu
+               label="Generation Gap">
+            <command
+                  commandId="de.fxworld.generationgap.buildnowcommand"
+                  label="Building with Generation Gap"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+      <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="de.fxworld.generationgap.nature">
+                        </test>
+                     </adapt>
+    </iterate>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.fxworld.generationgap.addnaturecommand"
+                  label="Add Generation Gap Nature"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+        				<iterate
+                  operator="or">
+               <and>
+                  <not>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="de.fxworld.generationgap.nature">
+                        </test>
+                     </adapt>
+                  </not>
+                  <adapt
+                        type="org.eclipse.core.resources.IResource">
+                     <test
+                           property="org.eclipse.core.resources.projectNature"
+                           value="org.eclipse.jdt.core.javanature">
+                     </test>
+                  </adapt>
+               </and>
+        				
+	                </iterate>
+               
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.fxworld.generationgap.removenaturecommand"
+                  label="Remove Generation Gap Nature"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+              <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="de.fxworld.generationgap.nature">
+                        </test>
+                     </adapt>
+              </iterate>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="de.fxworld.generationgap.createcustomcommand"
+                  label="Create Custom Java Class"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.name"
+                              value="*.java">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </visibleWhen>
+            </command>
+           
+         </menu>
+         <menu
+               label="Generation Gap">
+         </menu>
+      </menuContribution>
+   </extension>
+</plugin>

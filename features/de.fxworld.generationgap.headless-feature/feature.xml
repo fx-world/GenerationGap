@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.fxworld.generationgap.headless"
+      label="GenerationGap Headless"
+      version="4.4.2.qualifier"
+      provider-name="fx-world Softwareentwicklung">
+
+   <description url="https://github.com/fx-world/GenerationGap">
+      Generation Gap Headless for usage in buckminster.
+   </description>
+
+	<copyright>
+      Copyright (C) 2015 Pascal Weyprecht
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+
+Contributors:
+   itemis AG - exemplary code
+   fx-world Softwareentwicklung - initial implementation
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0
+   </license>
+
+   <url>
+      <update label="fx-world update site" url="http://updates.fx-world.de"/>
+   </url>
+
+   <plugin
+         id="de.fxworld.generationgap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

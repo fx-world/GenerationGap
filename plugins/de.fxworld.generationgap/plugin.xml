@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension
+         id="de.fxworld.generationgap.builder"
+         name="Generation Gap Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="false"
+            hasNature="true"
+            isConfigurable="true"
+            supportsConfigurations="false">
+         <run
+               class="de.fxworld.generationgap.GapProjectBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="de.fxworld.generationgap.nature"
+         name="Generation Gap Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="de.fxworld.generationgap.GapProjectNature">
+         </run>
+      </runtime>
+      <builder
+            id="de.fxworld.generationgap.builder">
+      </builder>
+   </extension>
+</plugin>

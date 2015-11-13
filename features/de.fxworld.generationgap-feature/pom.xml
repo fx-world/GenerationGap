@@ -1,0 +1,14 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.fx-world</groupId>
+    <artifactId>GenerationGap</artifactId>
+    <version>4.4.2-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+  </parent>
+  
+  <groupId>de.fx-world.features</groupId>
+  <artifactId>de.fxworld.generationgap</artifactId>
+  <version>4.4.2-SNAPSHOT</version>
+  <packaging>eclipse-feature</packaging>
+</project>
