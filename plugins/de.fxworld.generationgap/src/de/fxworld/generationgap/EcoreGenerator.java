@@ -24,7 +24,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
@@ -55,6 +58,7 @@ import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
@@ -70,57 +74,39 @@ import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
  */
 public class EcoreGenerator implements IWorkflowComponent {
 
-	private static Logger log = Logger.getLogger(EcoreGenerator.class);
+	protected static Logger log = Logger.getLogger(EcoreGenerator.class);
 	static {
 		EcorePackage.eINSTANCE.getEFactoryInstance();
 		GenModelPackage.eINSTANCE.getEFactoryInstance();
 	}
 
-	private boolean generateEdit = false;
-	private boolean generateEditor = false;
-	private boolean generateCustomClasses = false;
-	private String  customSrcPath = null;
+	protected boolean generateEdit          = false;
+	protected boolean generateEditor        = false;
+	protected boolean generateCustomClasses = false;
+	protected String  customSrcPath         = null;
 
 	protected List<String> srcPaths = new ArrayList<String>();
-	private String genModel;
+	protected String genModel;
 	
-	private Monitor monitor = new BasicMonitor();
+	protected Set<IErrorHandler> errorHandlers = new HashSet<IErrorHandler>();
+	protected Monitor            monitor       = new BasicMonitor();
 
 	
-	public void setGenerateEdit(boolean generateEdit) {
-		this.generateEdit = generateEdit;
+	public EcoreGenerator() {
+		errorHandlers.add(new IErrorHandler() {			
+			@Override
+			public void handleError(IStatus status) {
+				log.error(status, status.getException());				
+			}
+		});
 	}
 	
-	public void setGenerateEditor(boolean generateEditor) {
-		this.generateEditor = generateEditor;
-	}
-	
-	public void setGenerateCustomClasses(boolean generateCustomClasses) {
-		this.generateCustomClasses = generateCustomClasses;
-	}
-	
-	public String getCustomSrcPath() {
-		return customSrcPath;
-	}
-
-	public void setCustomSrcPath(String customSrcPath) {
-		this.customSrcPath = customSrcPath;
-	}
-
-	@Mandatory
-	public void addSrcPath(String srcPath) {
-		this.srcPaths.add(srcPath);
-	}
-	
-	@Mandatory
-	public void setGenModel(String genModel) {
-		this.genModel = genModel;
-	}
-	
+	@Override
 	public void preInvoke() {
 		new ResourceSetImpl().getResource(URI.createURI(genModel), true);
 	}
 	
+	@Override
 	public void postInvoke() {
 	}
 	
@@ -128,73 +114,73 @@ public class EcoreGenerator implements IWorkflowComponent {
 		return new GenModelHelper();
 	}
 
+	@Override
 	public void invoke(IWorkflowContext ctx) {
 
 		ResourceSet resourceSet      = new ResourceSetImpl();
-		URI uri = URI.createURI(genModel);
-		System.out.println(uri.toPlatformString(true));
+		resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true)); //new
+		URI         uri              = URI.createURI(genModel);
         Resource    genModelResource = resourceSet.getResource(uri, true);
         
         final GenModel genModel = (GenModel)genModelResource.getContents().get(0);
 
         IStatus status = genModel.validate();
-        if (!status.isOK())
-        {
-          System.out.println(status.getMessage());
-          System.out.println(status.toString());
-        }
-        /////////
-		
-		genModel.reconcile();
-		genModel.setCanGenerate(true);
-		genModel.setUpdateClasspath(true);
-
-		if (generateCustomClasses) {
-			generateCustomClasses(genModel);
-		}
-		
-		createGenModelSetup().registerGenModel(genModel);
-
-		Generator generator = new Generator() {
-			@Override
-			public JControlModel getJControlModel() {
-				return new JControlModel(){
-					@Override
-					public boolean canMerge() {
-						return false;
-					}
-				};
-			}
-		};
-
-		generator.getAdapterFactoryDescriptorRegistry().addDescriptor(GenModelPackage.eNS_URI, (Descriptor) new GeneratorAdapterDescriptor(getTypeMapper()));
-		generator.setInput(genModel);
-		
-		log.info("generating EMF code for "+this.genModel);
-		
-		Diagnostic diagnostic = generator.generate(genModel, GenBaseGeneratorAdapter.MODEL_PROJECT_TYPE, getMonitor());
-
-		if (diagnostic.getSeverity() != Diagnostic.OK)
-			log.info(diagnostic);
-
-		if (generateEdit) {
-			Diagnostic editDiag = generator.generate(genModel, GenBaseGeneratorAdapter.EDIT_PROJECT_TYPE, getMonitor());
-			if (editDiag.getSeverity() != Diagnostic.OK)
-				log.info(editDiag);
-		}
-
-		if (generateEditor) {	
-			Diagnostic editorDiag = generator.generate(genModel, GenBaseGeneratorAdapter.EDITOR_PROJECT_TYPE, getMonitor());
-			
-			if (editorDiag.getSeverity() != Diagnostic.OK) {
-				log.info(editorDiag);
-			}
-			
-		}
-		
-		modifyJavaModelClasses(genModel);
-	}
+        
+        if (!status.isOK()) {
+          notifyErrorHandlers(status);
+          
+        } else {		
+			//genModel.reconcile();
+			genModel.setCanGenerate(true);
+			genModel.setUpdateClasspath(false); //was true
 	
+			if (generateCustomClasses) {
+				generateCustomClasses(genModel);
+			}
+			
+			createGenModelSetup().registerGenModel(genModel);
+	
+			Generator generator = new Generator() {
+				@Override
+				public JControlModel getJControlModel() {
+					return new JControlModel(){
+						@Override
+						public boolean canMerge() {
+							return false;
+						}
+					};
+				}
+			};
+	
+			generator.getAdapterFactoryDescriptorRegistry().addDescriptor(GenModelPackage.eNS_URI, (Descriptor) new GeneratorAdapterDescriptor(getTypeMapper()));
+			generator.setInput(genModel);
+			
+			log.info("generating EMF code for " + this.genModel);
+			
+			Diagnostic diagnostic = generator.generate(genModel, GenBaseGeneratorAdapter.MODEL_PROJECT_TYPE, getMonitor());
+	
+			if (diagnostic.getSeverity() != Diagnostic.OK)
+				log.info(diagnostic);
+	
+			if (generateEdit) {
+				Diagnostic editDiag = generator.generate(genModel, GenBaseGeneratorAdapter.EDIT_PROJECT_TYPE, getMonitor());
+				if (editDiag.getSeverity() != Diagnostic.OK)
+					log.info(editDiag);
+			}
+	
+			if (generateEditor) {	
+				Diagnostic editorDiag = generator.generate(genModel, GenBaseGeneratorAdapter.EDITOR_PROJECT_TYPE, getMonitor());
+				
+				if (editorDiag.getSeverity() != Diagnostic.OK) {
+					log.info(editorDiag);
+				}
+				
+			}
+			
+			modifyJavaModelClasses(genModel);
+        }
+	}
+
 	protected void generateCustomClasses(GenModel genModel) {
 		for (GenPackage genPackage : genModel.getAllGenPackagesWithClassifiers()) {
 			for (EClassifier eClassifier : genPackage.getEcorePackage().getEClassifiers()) {
@@ -280,12 +266,12 @@ public class EcoreGenerator implements IWorkflowComponent {
 	         
 	}
 
-	protected Function<String, String> getTypeMapper() {
+	protected IFunction<String, String> getTypeMapper() {
 		return new Mapper();
 	}
 
 	
-	protected final class Mapper implements Function<String, String> {
+	protected final class Mapper implements IFunction<String, String> {
 		public String apply(String from) {
 			String result = null;
 			
@@ -316,6 +302,21 @@ public class EcoreGenerator implements IWorkflowComponent {
 			throw new WrappedException(e);
 		}
 	}
+	
+	protected boolean existsCustomClass(String from) {
+		boolean result = false;
+		
+		for(String srcPath: srcPaths) {
+			URI createURI = URI.createURI(srcPath+"/"+from.replace('.', '/')+"Custom.java");
+				
+			if (URIConverter.INSTANCE.exists(createURI, null)) {
+				result = true;
+				break;
+			}
+		}
+		
+		return result;
+	}
 
 	/**
 	 * @author Sven Efftinge - Initial contribution and API
@@ -332,8 +333,9 @@ public class EcoreGenerator implements IWorkflowComponent {
 					protected void createImportManager(String packageName, String className) {
 						importManager = new ImportManagerHack(packageName, typeMapper);
 						importManager.addMasterImport(packageName, className);
-						if (generatingObject != null)
+						if (generatingObject != null) {
 							((GenBase) generatingObject).getGenModel().setImportManager(importManager);
+						}
 					}
 				};
 			}
@@ -345,8 +347,9 @@ public class EcoreGenerator implements IWorkflowComponent {
 					protected void createImportManager(String packageName, String className) {
 						importManager = new ImportManagerHack(packageName, typeMapper);
 						importManager.addMasterImport(packageName, className);
-						if (generatingObject != null)
+						if (generatingObject != null) {
 							((GenBase) generatingObject).getGenModel().setImportManager(importManager);
+						}
 					}
 				};
 			}
@@ -359,9 +362,9 @@ public class EcoreGenerator implements IWorkflowComponent {
 						protected void createImportManager(String packageName, String className) {
 							importManager = new ImportManagerHack(packageName, typeMapper);
 							importManager.addMasterImport(packageName, className);
-							if (generatingObject != null)
-								((GenBase) generatingObject).getGenModel().setImportManager(
-										importManager);
+							if (generatingObject != null) {
+								((GenBase) generatingObject).getGenModel().setImportManager(importManager);
+							}
 						}
 
 					};
@@ -376,16 +379,17 @@ public class EcoreGenerator implements IWorkflowComponent {
 					protected void createImportManager(String packageName, String className) {
 						importManager = new ImportManagerHack(packageName, typeMapper);
 						importManager.addMasterImport(packageName, className);
-						if (generatingObject != null)
+						if (generatingObject != null) {
 							((GenBase) generatingObject).getGenModel().setImportManager(importManager);
+						}
 					}
 				};
 			}
 		}
 
-		private Function<String, String> typeMapper;
+		private IFunction<String, String> typeMapper;
 
-		protected GeneratorAdapterDescriptor(Function<String,String> typeMapper) {
+		protected GeneratorAdapterDescriptor(IFunction<String,String> typeMapper) {
 			this.typeMapper = typeMapper;
 		}
 
@@ -397,9 +401,9 @@ public class EcoreGenerator implements IWorkflowComponent {
 
 	protected static class ImportManagerHack extends ImportManager {
 
-		private Function<String, String> typeMapper;
+		private IFunction<String, String> typeMapper;
 
-		public ImportManagerHack(String compilationUnitPackage, Function<String,String> typeMapper) {
+		public ImportManagerHack(String compilationUnitPackage, IFunction<String,String> typeMapper) {
 			super(compilationUnitPackage);
 			this.typeMapper = typeMapper;
 		}
@@ -414,6 +418,12 @@ public class EcoreGenerator implements IWorkflowComponent {
 				return super.getImportedName(qualifiedName, autoImport);
 		}
 	}
+	
+	protected void notifyErrorHandlers(IStatus status) {
+		for (IErrorHandler handler : new HashSet<IErrorHandler>(errorHandlers)) {
+			handler.handleError(status);
+		}		
+	}
 
 	public Monitor getMonitor() {
 		return monitor;
@@ -422,20 +432,43 @@ public class EcoreGenerator implements IWorkflowComponent {
 	public void setMonitor(Monitor monitor) {
 		this.monitor = monitor;
 	}
+	
+	public void addErrorHandler(IErrorHandler errorHandler) {
+		errorHandlers.add(errorHandler);
+	}
+	
 
-	protected boolean existsCustomClass(String from) {
-		boolean result = false;
-		
-		for(String srcPath: srcPaths) {
-			URI createURI = URI.createURI(srcPath+"/"+from.replace('.', '/')+"Custom.java");
-				
-			if (URIConverter.INSTANCE.exists(createURI, null)) {
-				result = true;
-				break;
-			}
-		}
-		
-		return result;
+	public void removeErrorHandler(IErrorHandler errorHandler) {
+		errorHandlers.remove(errorHandler);
+	}
+	
+	public void setGenerateEdit(boolean generateEdit) {
+		this.generateEdit = generateEdit;
+	}
+	
+	public void setGenerateEditor(boolean generateEditor) {
+		this.generateEditor = generateEditor;
+	}
+	
+	public void setGenerateCustomClasses(boolean generateCustomClasses) {
+		this.generateCustomClasses = generateCustomClasses;
+	}
+	
+	public String getCustomSrcPath() {
+		return customSrcPath;
 	}
 
+	public void setCustomSrcPath(String customSrcPath) {
+		this.customSrcPath = customSrcPath;
+	}
+
+	@Mandatory
+	public void addSrcPath(String srcPath) {
+		this.srcPaths.add(srcPath);
+	}
+	
+	@Mandatory
+	public void setGenModel(String genModel) {
+		this.genModel = genModel;
+	}
 }

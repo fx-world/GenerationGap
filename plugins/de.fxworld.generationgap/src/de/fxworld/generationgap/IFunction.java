@@ -16,7 +16,7 @@
  */
 package de.fxworld.generationgap;
 
-public interface Function<T1, T2> {
+public interface IFunction<T1, T2> {
 
 	public T1 apply(T2 input);
 

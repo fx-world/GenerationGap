@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -28,6 +29,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.mwe.utils.DirectoryCleaner;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
@@ -84,12 +86,19 @@ public class GapWorkflow {
 		}
 		
 		for (IFile genmodelFile : genmodelFiles) {
-			if (hasToBuild(configuration, genmodelFile)) {			
+			if (hasToBuild(configuration, genmodelFile)) {
+				MarkerErrorHandler errorHandler = new MarkerErrorHandler(genmodelFile);
+				
+				deleteMarkers(genmodelFile);
+				
 				ecoreGenerator.setGenModel("file://"+genmodelFile.getLocation().toString());
+				ecoreGenerator.addErrorHandler(errorHandler);
 				
 				ecoreGenerator.preInvoke();
 				ecoreGenerator.invoke(context);
 				ecoreGenerator.postInvoke();
+				
+				ecoreGenerator.removeErrorHandler(errorHandler);
 			}
 		}
 		
@@ -164,4 +173,35 @@ public class GapWorkflow {
 		return result;
 	}
 	
+	protected void deleteMarkers(IFile file) {
+		try {
+			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+		} catch (CoreException e) {
+			// an error while marking an error, lets throw it
+		}
+	}
+	
+	class MarkerErrorHandler implements IErrorHandler {
+
+		protected IFile file;
+		
+		public MarkerErrorHandler(IFile file) {
+			this.file = file;
+		}
+		
+		@Override
+		public void handleError(IStatus status) {
+			try {
+				IMarker m = file.createMarker(IMarker.PROBLEM);
+				   //m.setAttribute(IMarker.LINE_NUMBER, line);
+				   m.setAttribute(IMarker.MESSAGE, status.toString());
+				   m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+				   m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			} catch (CoreException e) {
+				// an error while marking an error, lets throw it
+				throw new RuntimeException(e);
+			}
+		}
+		
+	}
 }

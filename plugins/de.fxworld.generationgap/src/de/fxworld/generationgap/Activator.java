@@ -28,11 +28,11 @@ import com.google.inject.Injector;
 public class Activator implements BundleActivator {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "de.fxworld.generation.generationgap"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "de.fxworld.generationgap"; //$NON-NLS-1$
 	
-	public static final String BUILDER_ID = "de.fxworld.generation.generationgap.builder";
+	public static final String BUILDER_ID = "de.fxworld.generationgap.builder";
 	
-	public static final String NATURE_ID = "de.fxworld.generation.generationgap.nature";
+	public static final String NATURE_ID = "de.fxworld.generationgap.nature";
 
 	// The shared instance
 	private static Activator plugin;
