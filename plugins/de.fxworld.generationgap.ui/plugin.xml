@@ -89,37 +89,6 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="de.fxworld.generationgap.addnaturecommand"
-                  label="Add Generation Gap Nature"
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-        				<iterate
-                  operator="or">
-               <and>
-                  <not>
-                     <adapt
-                           type="org.eclipse.core.resources.IResource">
-                        <test
-                              property="org.eclipse.core.resources.projectNature"
-                              value="de.fxworld.generationgap.nature">
-                        </test>
-                     </adapt>
-                  </not>
-                  <adapt
-                        type="org.eclipse.core.resources.IResource">
-                     <test
-                           property="org.eclipse.core.resources.projectNature"
-                           value="org.eclipse.jdt.core.javanature">
-                     </test>
-                  </adapt>
-               </and>
-        				
-	                </iterate>
-               
-               </visibleWhen>
-            </command>
-            <command
                   commandId="de.fxworld.generationgap.removenaturecommand"
                   label="Remove Generation Gap Nature"
                   style="push">
@@ -155,9 +124,39 @@
             </command>
            
          </menu>
-         <menu
-               label="Generation Gap">
-         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure">
+         <command
+               commandId="de.fxworld.generationgap.addnaturecommand"
+               label="Add Generation Gap Nature"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <iterate
+                     operator="or">
+                  <and>
+                     <not>
+                        <adapt
+                              type="org.eclipse.core.resources.IResource">
+                           <test
+                                 property="org.eclipse.core.resources.projectNature"
+                                 value="de.fxworld.generationgap.nature">
+                           </test>
+                        </adapt>
+                     </not>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="org.eclipse.jdt.core.javanature">
+                        </test>
+                     </adapt>
+                  </and>
+               </iterate>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
 </plugin>
