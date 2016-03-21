@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.fx-world</groupId>
+	<artifactId>simpleGeneration</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>de.fx-world</groupId>
+				<artifactId>generationgap-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<generateEdit>false</generateEdit>
+					<generateEditor>false</generateEditor>
+					<generateCustomClasses>false</generateCustomClasses>
+					<customSrcPath>src/test/resources/unit/simpleGeneration/src</customSrcPath>
+					<srcPaths>
+						<param>src/test/resources/unit/simpleGeneration/src</param>
+					</srcPaths>
+					<platformResourceMap>
+						<simpleGeneration>src/test/resources/unit/simpleGeneration/</simpleGeneration>
+					</platformResourceMap>
+<!-- 					<genModels>
+						<param>${projectdir}/metamodel/test.genmodel</param>
+					</genModels>
+-->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

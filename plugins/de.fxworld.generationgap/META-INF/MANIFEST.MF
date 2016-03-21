@@ -5,16 +5,17 @@ Bundle-SymbolicName: de.fxworld.generationgap;singleton:=true
 Bundle-Version: 4.4.2.qualifier
 Bundle-Vendor: fx-world Softwareentwicklung
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.emf.mwe2.lib,
  org.eclipse.emf.mwe2.language,
- org.eclipse.core.resources,
+ org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.jdt.core,
  org.eclipse.emf.databinding,
  org.apache.log4j,
  org.eclipse.emf.mwe.utils,
  org.eclipse.emf.mwe.core,
- com.google.inject;bundle-version="3.0.0"
+ com.google.inject;bundle-version="3.0.0",
+ de.fxworld.generationgap.core;bundle-version="1.0.0";visibility:=reexport
 Export-Package: de.fxworld.generationgap
 Bundle-Activator: de.fxworld.generationgap.Activator
 Bundle-ActivationPolicy: lazy

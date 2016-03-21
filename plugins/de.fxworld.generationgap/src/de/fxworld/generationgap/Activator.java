@@ -1,26 +1,26 @@
+package de.fxworld.generationgap;
+
 /*
- * COPYRIGHT_START
+ * #%L
+ * de.fxworld.generationgap
+ * %%
+ * Copyright (C) 2016 fx-world Softwareentwicklung
+ * %%
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v. 1.0 which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ * #L%
  * 
- * Copyright (C) 2015 Pascal Weyprecht
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * COPYRIGHT_END
- *
  * Contributors:
  *    itemis AG - exemplary code
  *    fx-world Softwareentwicklung - initial implementation
  */
-package de.fxworld.generationgap;
 
-import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import com.google.inject.Injector;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -66,15 +66,6 @@ public class Activator implements BundleActivator {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-	}
-	
-	public static GapWorkflow createGapWorkflow() {
-		GapWorkflow result   = null;
-		Injector    injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
-		
-		result = injector.getInstance(GapWorkflow.class);		
-		
-		return result;
 	}
 
 }

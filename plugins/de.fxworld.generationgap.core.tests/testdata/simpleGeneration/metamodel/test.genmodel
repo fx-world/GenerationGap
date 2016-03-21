@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/simpleGeneration/src-gen" editDirectory="/simpleGeneration.edit/src-gen"
+    editorDirectory="/simpleGeneration.editor/src-gen" modelPluginID="simpleGeneration"
+    modelName="Test" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>test.ecore</foreignModel>
+  <genPackages prefix="Testpackage" basePackage="de.fxworld" disposableProviderFactory="true"
+      ecorePackage="test.ecore#/">
+    <genClasses ecoreClass="test.ecore#//User">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute test.ecore#//User/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute test.ecore#//User/password"/>
+    </genClasses>
+    <genClasses ecoreClass="test.ecore#//Group">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute test.ecore#//Group/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference test.ecore#//Group/members"/>
+      <genOperations ecoreOperation="test.ecore#//Group/isMember">
+        <genParameters ecoreParameter="test.ecore#//Group/isMember/user"/>
+      </genOperations>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

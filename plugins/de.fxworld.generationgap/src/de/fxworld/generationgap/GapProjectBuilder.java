@@ -1,35 +1,47 @@
+package de.fxworld.generationgap;
+
 /*
- * COPYRIGHT_START
+ * #%L
+ * de.fxworld.generationgap
+ * %%
+ * Copyright (C) 2016 fx-world Softwareentwicklung
+ * %%
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v. 1.0 which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ * #L%
  * 
- * Copyright (C) 2015 Pascal Weyprecht
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * COPYRIGHT_END
- *
  * Contributors:
  *    itemis AG - exemplary code
  *    fx-world Softwareentwicklung - initial implementation
  */
-package de.fxworld.generationgap;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 public class GapProjectBuilder extends IncrementalProjectBuilder {
 
@@ -126,12 +138,13 @@ public class GapProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void buildGenmodelFiles(List<IFile> genmodelFiles, IProgressMonitor monitor) {		
-		GapWorkflow gapWorkflow = Activator.createGapWorkflow();		
+		GapEclipseWorkflow gapWorkflow = GapEclipseWorkflowFactory.createGapWorkflow();		
+	 
 		
 		if (!genmodelFiles.isEmpty()) {
+			
 			IProject project = genmodelFiles.get(0).getProject();
 			gapWorkflow.build(new GapConfiguration(JavaCore.create(project)), genmodelFiles, monitor);
 		}
 	}
-
 }

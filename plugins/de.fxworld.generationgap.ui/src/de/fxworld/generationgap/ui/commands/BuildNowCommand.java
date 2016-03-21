@@ -1,19 +1,22 @@
+package de.fxworld.generationgap.ui.commands;
+
 /*
- * COPYRIGHT_START
- * 
- * Copyright (C) 2015 Pascal Weyprecht
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * COPYRIGHT_END
+ * #%L
+ * de.fxworld.generationgap.ui
+ * %%
+ * Copyright (C) 2016 fx-world Softwareentwicklung
+ * %%
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v. 1.0 which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ * #L%
  *
  * Contributors:
  *    fx-world Softwareentwicklung - initial implementation
  */
-package de.fxworld.generationgap.ui.commands;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +29,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 
-import de.fxworld.generationgap.Activator;
 import de.fxworld.generationgap.GapConfiguration;
-import de.fxworld.generationgap.GapWorkflow;
+import de.fxworld.generationgap.GapEclipseWorkflow;
+import de.fxworld.generationgap.GapEclipseWorkflowFactory;
 
 
 public class BuildNowCommand extends AbstractJavaProjectHandler implements IHandler {
@@ -46,7 +49,7 @@ public class BuildNowCommand extends AbstractJavaProjectHandler implements IHand
 	}
 	
 	protected void executeOnJavaProject(IJavaProject javaProject, IProgressMonitor monitor) {
-		GapWorkflow workflow = Activator.createGapWorkflow();
+		GapEclipseWorkflow workflow = GapEclipseWorkflowFactory.createGapWorkflow();
 		
 		final List<IFile> genmodelFiles = new ArrayList<IFile>(); 
 		

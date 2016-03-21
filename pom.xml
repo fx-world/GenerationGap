@@ -101,34 +101,44 @@
 			</plugin>
 
 			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>replacer</artifactId>
-				<version>1.5.1</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.8</version>
+				<configuration>
+					<verbose>false</verbose>
+					<addSvnKeyWords>false</addSvnKeyWords>
+					<organizationName>fx-world Softwareentwicklung</organizationName>
+					<inceptionYear>2016</inceptionYear>
+				</configuration>
 				<executions>
 					<execution>
-						<phase>process-sources</phase>
+						<id>first</id>
 						<goals>
-							<goal>replace</goal>
+							<goal>update-file-header</goal>
+							<!-- <goal>check-file-header</goal>  -->
 						</goals>
+						<phase>process-sources</phase>
+						<configuration>
+							<licenseName>epl_v1</licenseName>
+							<failOnMissingHeader>true</failOnMissingHeader>
+							
+							<canUpdateCopyright>true</canUpdateCopyright>
+							<canUpdateDescription>true</canUpdateDescription>
+							<canUpdateLicense>true</canUpdateLicense>
+							
+							<roots>
+								<root>src</root>
+								<root>src/main/java</root>
+                				<root>src/test</root>
+							</roots>
+							<includes>
+                				<include>**/*.java</include>
+              				</includes>              				
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<includes>
-						<include>src/**/*.java</include>
-					</includes>
-					<preserveDir>true</preserveDir>
-    	
-       				<token>( \* COPYRIGHT_START(.*)COPYRIGHT_END)</token>
-					<valueFile>copyright.value</valueFile>
-					<regex>true</regex>
-					<regexFlags>                    
-                    	<regexFlag>MULTILINE</regexFlag>
-                    	<regexFlag>DOTALL</regexFlag>
-                	</regexFlags>		
-                				
-				</configuration>
 			</plugin>
-
+ 
 			<plugin>
 				<groupId>com.ruleoftech</groupId>
 				<artifactId>markdown-page-generator-plugin</artifactId>
@@ -190,10 +200,11 @@
 	<modules>
 		<module>plugins/de.fxworld.generationgap</module>
 		<module>features/de.fxworld.generationgap-feature</module>
-		<module>
-			features/de.fxworld.generationgap.headless-feature
-		</module>
+		<module>features/de.fxworld.generationgap.headless-feature</module>
 		<module>sites/de.fxworld.generationgap.site</module>
 		<module>plugins/de.fxworld.generationgap.ui</module>
+		<module>jars/generationgap-maven-plugin</module>
+		<module>plugins/de.fxworld.generationgap.core</module>
+		<module>plugins/de.fxworld.generationgap.core.tests</module>
 	</modules>
 </project>
