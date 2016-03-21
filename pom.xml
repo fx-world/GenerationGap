@@ -179,9 +179,11 @@
 											<goal>update-file-heade</goal>
 										</goals>
 									</pluginExecutionFilter>
-									<execute>
-                 						<runOnIncremental>true</runOnIncremental>
-               						</execute >
+									<action>
+										<execute>											
+											<runOnIncremental>true</runOnIncremental>
+										</execute>
+									</action>									
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
