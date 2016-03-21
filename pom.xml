@@ -172,22 +172,16 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											com.google.code.maven-replacer-plugin
-										</groupId>
-										<artifactId>
-											replacer
-										</artifactId>
-										<versionRange>
-											[1.5.1,)
-										</versionRange>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>license-maven-plugin</artifactId>
+										<versionRange>[1.8,)</versionRange>
 										<goals>
-											<goal>replace</goal>
+											<goal>update-file-heade</goal>
 										</goals>
 									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
+									<execute>
+                 						<runOnIncremental>true</runOnIncremental>
+               						</execute >
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
