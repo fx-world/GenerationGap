@@ -9,7 +9,7 @@
       Generation Gap Headless for usage in buckminster.
    </description>
 
-	<copyright>
+   <copyright>
       Copyright (C) 2015 Pascal Weyprecht
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,13 @@ Contributors:
 
    <plugin
          id="de.fxworld.generationgap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.fxworld.generationgap.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
