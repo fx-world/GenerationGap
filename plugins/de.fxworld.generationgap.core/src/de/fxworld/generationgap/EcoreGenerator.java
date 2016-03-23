@@ -360,8 +360,6 @@ public class EcoreGenerator implements IWorkflowComponent {
 				}
 			}
 			
-		} else {
-			log.debug("Classname not understood: " + original);
 		}
 		
 		return result;
@@ -378,10 +376,14 @@ public class EcoreGenerator implements IWorkflowComponent {
 		return result;
 	}
 
+	/**
+	 * @param original
+	 * @return the normalized classname or null if the class should not be mapped
+	 */
 	protected String getNormalizedClassName(String original) {
 		String result = null;
 
-		Pattern p = Pattern.compile("(?<package>.*?)\\.(impl\\.)?(?<class>[^\\.]+?)(Impl)?");
+		Pattern p = Pattern.compile("(?<package>.*?)\\.impl\\.(?<class>[^\\.]+?)Impl");
 		Matcher m = p.matcher(original);
 		 
 		if (m.matches()) {

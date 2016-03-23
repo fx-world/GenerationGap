@@ -45,10 +45,15 @@ public class GenerationGapMojoTest extends AbstractMojoTestCase {
     /**
      * @throws Exception if any
      */
-    public void testSomething() throws Exception {
+    public void testGenerator() throws Exception {
     	File testPackage = new File("src/test/resources/unit/simpleGeneration/src-gen/de/fxworld/testpackage/impl/TestpackageFactoryImpl.java");
     	if (testPackage.exists()) {
     		testPackage.delete();
+    	}
+    	
+    	File testGroupImpl = new File("src/test/resources/unit/simpleGeneration/src-gen/de/fxworld/testpackage/impl/GroupImpl.java");
+    	if (testGroupImpl.exists()) {
+    		testGroupImpl.delete();
     	}
     	
         File pom = getTestFile("src/test/resources/unit/simpleGeneration/pom.xml");
@@ -76,6 +81,12 @@ public class GenerationGapMojoTest extends AbstractMojoTestCase {
         assertFalse(Files.newBufferedReader(testPackage.toPath())
             	.lines()
             	.filter(line -> line.contains("UserImplCustom"))
+            	.findAny()
+            	.isPresent());
+        
+        assertFalse(Files.newBufferedReader(testGroupImpl.toPath())
+            	.lines()
+            	.filter(line -> line.contains("implements GroupImplCustom"))
             	.findAny()
             	.isPresent());
     }
