@@ -29,18 +29,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+import de.fxworld.generationgap.GapEclipseWorkflow.MarkerErrorHandler;
+
 public class GapEclipseWorkflow extends GapWorkflow {
 
 	protected static final String PROJECT = "project";
 
 	public void build(GapConfiguration gapConfiguration, List<IFile> genmodelFiles, IProgressMonitor monitor) {
-		List<String> genmodelFileStrings   = getGenmodelFilesStrings(genmodelFiles); 
+		//List<String> genmodelFileStrings   = getGenmodelFilesStrings(genmodelFiles); 
+		List<URI>    genmodelURIs          = getGenmodelURIs(genmodelFiles);
 		List<String> srcgenPathsToClear    = gapConfiguration.getSrcPaths();
 		String       customSrcPath         = gapConfiguration.getCustomSrcPath();
 		boolean      generateEdit          = gapConfiguration.isGenerateEdit();
@@ -54,7 +59,7 @@ public class GapEclipseWorkflow extends GapWorkflow {
 		
 		deleteMarkers(genmodelFiles);
 		
-		build(genmodelFileStrings, srcFolders, srcgenPathsToClear, customSrcPath, generateEdit, generateEditor, generateCustomClasses, context, monitor);
+		build(genmodelURIs, srcFolders, srcgenPathsToClear, customSrcPath, generateEdit, generateEditor, generateCustomClasses, context, monitor);
 		
 		// refresh all again
 		try {
@@ -65,30 +70,46 @@ public class GapEclipseWorkflow extends GapWorkflow {
 	}
 	
 	@Override
-	protected void generateGenFile(IWorkflowContext context, EcoreGenerator ecoreGenerator, String genmodelFileString) {
-		IProject           project      = (IProject) context.get(PROJECT);
-		IFile              genmodelFile = project.getFile(genmodelFileString);
+	protected void generateGenFile(IWorkflowContext context, EcoreGenerator ecoreGenerator, URI genmodelURI) {
+		//IProject           project      = (IProject) context.get(PROJECT);
+		//IFile              genmodelFile = project.getRoot().getFile(genmodelFileString);
+		IWorkspaceRoot     root         = ResourcesPlugin.getWorkspace().getRoot();				
+		IFile              genmodelFile = root.getFile(new Path(genmodelURI.toPlatformString(true)));
 		MarkerErrorHandler errorHandler = new MarkerErrorHandler(genmodelFile);
 		
 		deleteMarkers(genmodelFile);
 		
 		ecoreGenerator.addErrorHandler(errorHandler);
 		
-		super.generateGenFile(context, ecoreGenerator, genmodelFileString);
+		super.generateGenFile(context, ecoreGenerator, genmodelURI);
 		
 		ecoreGenerator.removeErrorHandler(errorHandler);
 	}
 
+	@Deprecated
 	protected List<String> getGenmodelFilesStrings(List<IFile> genmodelFiles) {
 		List<String> result = new ArrayList<String>();
 		
 		for (IFile genmodelFile: genmodelFiles) {
-			//result.add("file://"+genmodelFile.getLocation().toString());
+			//result.add("file://"+genmodelFile.getLocation().toString());			
 			result.add(genmodelFile.getLocation().toString());
 		}
 		
 		return result;
 	}
+	
+	protected List<URI> getGenmodelURIs(List<IFile> genmodelFiles) {
+		List<URI> result = new ArrayList<URI>();
+		
+		for (IFile genmodelFile: genmodelFiles) {
+			String fullPath = genmodelFile.getFullPath().toString();
+			URI uri = URI.createPlatformResourceURI(fullPath, true);
+			
+			result.add(uri);
+		}
+		
+		return result;
+	}	
 	
 	protected void deleteMarkers(List<IFile> genmodelFiles) {
 		for (IFile genFile : genmodelFiles) {

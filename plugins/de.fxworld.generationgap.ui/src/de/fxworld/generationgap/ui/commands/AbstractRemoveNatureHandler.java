@@ -58,6 +58,8 @@ public class AbstractRemoveNatureHandler extends AbstractProjectHandler implemen
 							if (!aNatureID.equals(natureId)) {
 								newNatureIDs[index] = aNatureID;
 							}
+							
+							index++;
 						}
 						
 						projectDescription.setNatureIds(newNatureIDs);

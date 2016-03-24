@@ -132,14 +132,16 @@ public class EcoreGenerator implements IWorkflowComponent {
 		
 		ResourceSet resourceSet = new ResourceSetImpl();
 		resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(false)); //new
+		//resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true)); //new
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new EcoreResourceFactoryImpl());
 		//resourceSet.getPackageRegistry().put(GenModelPackage.eNS_URI, GenModelPackage.eINSTANCE);         		
 		
 		URI         uri              = getGenModelURI();
-        Resource    genModelResource = resourceSet.getResource(getGenModelURI(), true);             
+		Resource    genModelResource = resourceSet.getResource(uri, true);             
         final GenModel genModel = (GenModel)genModelResource.getContents().get(0);               
         
-        IStatus status = genModel.validate();
+        genModel.reconcile();
+        IStatus status = genModel.validate();        
         
         if (!status.isOK()) {
           notifyErrorHandlers(status);
@@ -569,7 +571,9 @@ public class EcoreGenerator implements IWorkflowComponent {
 	
 	@Deprecated
 	public void setGenModel(String genModel) {
-		setGenModelURI(URI.createFileURI(genModel));
+		URI uri = URI.createFileURI(genModel);
+//		URI uri = URI.createURI("file:///" + genModel.replace("\\", "/") + "/");
+		setGenModelURI(uri);
 	}
 
 	public URI getCustomSourceGenerateURI() {

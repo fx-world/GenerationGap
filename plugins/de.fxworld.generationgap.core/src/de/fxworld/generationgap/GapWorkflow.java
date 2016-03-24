@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicMonitor;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.mwe.utils.DirectoryCleaner;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
@@ -39,7 +40,7 @@ public class GapWorkflow {
 	protected Provider<IWorkflowContext> ctxProvider;
 	
 	public void build(
-			List<String> genmodelFiles, // starts with "file://"
+			List<URI>    genmodelURIs, // starts with "file://"
 			List<String> srcFolders, // starts with "file://"
 			List<String> srcgenPathsToClear,
 			String  customSrcPath,
@@ -77,10 +78,10 @@ public class GapWorkflow {
 			ecoreGenerator.addSrcPath(sourceFolder);
 		}
 		
-		for (String genmodelFile : genmodelFiles) {
+		for (URI genmodelURI : genmodelURIs) {
 			//if (hasToBuild(configuration, genmodelFile)) {
 				
-				generateGenFile(context, ecoreGenerator, genmodelFile);		
+				generateGenFile(context, ecoreGenerator, genmodelURI);		
 				
 			//}
 		}
@@ -99,8 +100,8 @@ public class GapWorkflow {
 		}
 	}
 
-	protected void generateGenFile(IWorkflowContext context, EcoreGenerator ecoreGenerator, String genmodelFile) {
-		ecoreGenerator.setGenModel(genmodelFile);
+	protected void generateGenFile(IWorkflowContext context, EcoreGenerator ecoreGenerator, URI genmodelURI) {
+		ecoreGenerator.setGenModelURI(genmodelURI);
 		
 		ecoreGenerator.preInvoke();
 		ecoreGenerator.invoke(context);

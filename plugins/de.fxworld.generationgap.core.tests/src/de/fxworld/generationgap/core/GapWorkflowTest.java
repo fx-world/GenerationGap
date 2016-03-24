@@ -47,23 +47,23 @@ public class GapWorkflowTest {
 
 	@Test
 	public void testBuild() {
-		String       rootFolder            = getRootFolder();
-		List<String> genmodelFiles         = new ArrayList<String>();
-		List<String> srcFolders            = new ArrayList<String>();
-		List<String> srcgenPathsToClear    = new ArrayList<String>();
-		String       customSrcPath         = rootFolder + "src";
-		boolean      generateEdit          = false;
-		boolean      generateEditor        = false;
-		boolean      generateCustomClasses = false;
-		
-		IWorkflowContext context = null;
-		IProgressMonitor monitor = new NullProgressMonitor();
-		
-		genmodelFiles.add(rootFolder + "metamodel/test.genmodel");
-		srcFolders.add(rootFolder + "src");
-		srcgenPathsToClear.add(rootFolder + "src-gen");
-		
-		workflow.build(genmodelFiles, srcFolders, srcgenPathsToClear, customSrcPath, generateEdit, generateEditor, generateCustomClasses, context, monitor);
+//		String       rootFolder            = getRootFolder();
+//		List<String> genmodelFiles         = new ArrayList<String>();
+//		List<String> srcFolders            = new ArrayList<String>();
+//		List<String> srcgenPathsToClear    = new ArrayList<String>();
+//		String       customSrcPath         = rootFolder + "src";
+//		boolean      generateEdit          = false;
+//		boolean      generateEditor        = false;
+//		boolean      generateCustomClasses = false;
+//		
+//		IWorkflowContext context = null;
+//		IProgressMonitor monitor = new NullProgressMonitor();
+//		
+//		genmodelFiles.add(rootFolder + "metamodel/test.genmodel");
+//		srcFolders.add(rootFolder + "src");
+//		srcgenPathsToClear.add(rootFolder + "src-gen");
+//		
+//		workflow.build(genmodelFiles, srcFolders, srcgenPathsToClear, customSrcPath, generateEdit, generateEditor, generateCustomClasses, context, monitor);
 	}
 
 	@Test
