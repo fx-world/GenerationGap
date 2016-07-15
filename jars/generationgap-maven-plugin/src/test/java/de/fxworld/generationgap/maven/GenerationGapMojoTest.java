@@ -56,6 +56,11 @@ public class GenerationGapMojoTest extends AbstractMojoTestCase {
     		testGroupImpl.delete();
     	}
     	
+    	File testUserImpl = new File("src/test/resources/unit/simpleGeneration/src-gen/de/fxworld/testpackage/impl/UserImpl.java");
+    	if (testGroupImpl.exists()) {
+    		testGroupImpl.delete();
+    	}
+    	
         File pom = getTestFile("src/test/resources/unit/simpleGeneration/pom.xml");
         assertNotNull(pom);
         assertTrue(pom.exists());
@@ -84,9 +89,24 @@ public class GenerationGapMojoTest extends AbstractMojoTestCase {
             	.findAny()
             	.isPresent());
         
+        // the group should not implment the custom class
         assertFalse(Files.newBufferedReader(testGroupImpl.toPath())
             	.lines()
             	.filter(line -> line.contains("implements GroupImplCustom"))
+            	.findAny()
+            	.isPresent());
+        
+        // also abstract classes should be extended
+        assertTrue(Files.newBufferedReader(testGroupImpl.toPath())
+            	.lines()
+            	.filter(line -> line.contains("extends NamedElementImplCustom"))
+            	.findAny()
+            	.isPresent());
+        
+        // also abstract classes should be extended
+        assertTrue(Files.newBufferedReader(testUserImpl.toPath())
+            	.lines()
+            	.filter(line -> line.contains("extends NamedElementImplCustom"))
             	.findAny()
             	.isPresent());
     }
