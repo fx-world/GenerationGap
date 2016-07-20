@@ -76,7 +76,7 @@
 			<id>deployRelease</id>
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>sftp://fx-world.de</ftp.url>
+				<ftp.url>ftp://fx-world.de</ftp.url>
 				<ftp.toDir>/generationgap</ftp.toDir>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
