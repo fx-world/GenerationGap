@@ -16,12 +16,7 @@
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.10</version>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-common</artifactId>
+				<artifactId>wagon-ftp</artifactId>
 				<version>2.10</version>
 			</extension>
 		</extensions>
@@ -43,7 +38,7 @@
 			<id>deployNightly</id>
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>sftp://fx-world.de</ftp.url>
+				<ftp.url>ftp://fx-world.de</ftp.url>
 				<ftp.toDir>/nightly/generationgap</ftp.toDir>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
