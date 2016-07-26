@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 public class GenerationGapMojoTest extends AbstractMojoTestCase {
 	
@@ -65,7 +69,15 @@ public class GenerationGapMojoTest extends AbstractMojoTestCase {
         assertNotNull(pom);
         assertTrue(pom.exists());
         
-        GenerationGapMojo mojo = (GenerationGapMojo) lookupMojo("generationgap", pom);        
+        File pluginPom = new File( getBasedir(), "pom.xml" );
+        Xpp3Dom pluginPomDom = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( pluginPom ) );
+        String artifactId = pluginPomDom.getChild( "artifactId" ).getValue();
+        String groupId = "de.fx-world";
+        String version = "0.0.1-SNAPSHOT";
+        PlexusConfiguration pluginConfiguration = extractPluginConfiguration( artifactId, pom );
+        String goal = "generationgap";
+        GenerationGapMojo mojo = (GenerationGapMojo) lookupMojo(groupId, artifactId, version, goal, pluginConfiguration);
+        //GenerationGapMojo mojo = (GenerationGapMojo) lookupMojo("generationgap", pom);        
         assertNotNull(mojo);
         
         List<String> genModels = new ArrayList<String>();
