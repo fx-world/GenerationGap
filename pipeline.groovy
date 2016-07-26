@@ -11,6 +11,11 @@ node {
 		//////////////////////////////////////////////////////////////////////////////
 		stage 'Prepare'
 
+		// set correct java version
+		env.JAVA_HOME="${tool 'JDK1.8'}"
+		env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+		sh 'java -version'
+		
 		// get git commiter date as version
 		sh('git log -1 --pretty=format:%cd --date=iso > GIT_COMMITER_DATE')
 		def date=readFile('GIT_COMMITER_DATE')
@@ -27,11 +32,6 @@ node {
         //    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=./.m2 -v' //
         //}
         mvn(localRepository, '-v')
-
-		// set correct java version
-		env.JAVA_HOME="${tool 'JDK1.8'}"
-		env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
-		sh 'java -version'
 
 		//////////////////////////////////////////////////////////////////////////////
 		stage 'Build'
