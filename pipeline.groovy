@@ -11,33 +11,37 @@ node {
 		//////////////////////////////////////////////////////////////////////////////
 		stage 'Prepare'
 
+		// get git commiter date as version
+		sh('git log -1 --pretty=format:%cd --date=iso > GIT_COMMITER_DATE')
+		def date=readFile('GIT_COMMITER_DATE')
+		echo "date " + date
+		def version='4.4.2.' + 'v' + date[0..3] + date[5..6] + date[8..9] + '-' + date[11..12] + date[14..15]
+		echo "version " + version
+
+		// get maven tool
+		def localRepository = pwd([tmp: true]) + "/mavenRepository"
+		def mvnHome = tool 'Maven339'
+        env.PATH = "${mvnHome}/bin:${env.PATH}"
+        //def mvnCmd = 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=' + localRepository
+        //wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
+        //    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=./.m2 -v' //
+        //}
+        mvn(localRepository, '-v')
+
 		// set correct java version
 		env.JAVA_HOME="${tool 'JDK1.8'}"
 		env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
 		sh 'java -version'
-		
-		// get maven tool
-		def mvnHome = tool 'Maven339'
-        env.PATH = "${mvnHome}/bin:${env.PATH}"
-        wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
-            sh 'mvn -s $MAVEN_SETTINGS -v' //
-        }
-
-		// get git commiter date as version
-		sh('git  log -1 --pretty=format:%cd --date=iso > GIT_COMMITER_DATE')
-		def date=readFile('GIT_COMMITER_DATE')
-		echo "date " + date
-		def VERSION='v' + date[0..3] + date[5..6] + date[8..9] + '-' + date[11..12] + date[14..15]
-		echo "version " + VERSION
 
 		//////////////////////////////////////////////////////////////////////////////
 		stage 'Build'
 
 		try {
 			// Run the maven build
-			wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
-                sh 'mvn -s $MAVEN_SETTINGS clean install' + " -Dversion=${VERSION}" // -Dversion=${VERSION}
-            }
+			//wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
+            //    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=./.m2 clean install' + " -Dversion=${VERSION}" // -Dversion=${VERSION}
+            //}
+            mvn(localRepository, 'clean install')
             
 		} catch (err) {
 			step([$class: 'ArtifactArchiver', artifacts: '**/target/*site*.zip'])
@@ -56,9 +60,10 @@ node {
 		def doRelease = true
 		
 		// Run the delploy nightly
-		wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
-            sh 'mvn -s $MAVEN_SETTINGS -P deployNightly -f ./sites/de.fxworld.generationgap.site/pom.xml install' + " -Dversion=${VERSION}"
-        }
+		//wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
+        //    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=./.m2 -P deployNightly -f ./sites/de.fxworld.generationgap.site/pom.xml install' + " -Dversion=${VERSION}"
+        //}
+        mvn(localRepository, '-P deployNightly -f ./sites/de.fxworld.generationgap.site/pom.xml install')
 
 		try {
 			timeout(time:5, unit:'DAYS') {
@@ -71,11 +76,13 @@ node {
 		
 		if (doRelease == true) {
 			// Run the delploy release
-			wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
-                echo "test"
-                sh 'mvn -s $MAVEN_SETTINGS -P deployRelease -f ./sites/de.fxworld.generationgap.site/pom.xml install' + " -Dversion=${VERSION}" //-Dversion=${VERSION}
-                
-            }
+			//wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
+            //    echo "test"
+            //    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=./.m2 -P deployRelease -f ./sites/de.fxworld.generationgap.site/pom.xml install' + " -Dversion=${VERSION}" //-Dversion=${VERSION}
+            //}
+            mvn(localRepository, '-P deployRelease -f ./sites/de.fxworld.generationgap.site/pom.xml install')
+            
+            mvn(localRepository, '-P deployRelease -f ./jars/generationgap-maven-plugin/pom.xml deploy -DskipTests')
 		}
 
 	} catch (err) {
@@ -89,4 +96,10 @@ node {
 		
 		throw err
 	}
+}
+
+def mvn(localRepository, parameter) {
+    wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'maven-settings', replaceTokens: false, targetLocation: '', variable: 'MAVEN_SETTINGS']]]) {
+        sh 'mvn -s $MAVEN_SETTINGS -Dmaven.repo.local=' + localRepository + ' ' + parameter
+    }
 }
