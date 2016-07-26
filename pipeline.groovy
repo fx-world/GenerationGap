@@ -15,8 +15,8 @@ node {
 		sh('git log -1 --pretty=format:%cd --date=iso > GIT_COMMITER_DATE')
 		def date=readFile('GIT_COMMITER_DATE')
 		echo "date " + date
-		def version='4.4.2.' + 'v' + date[0..3] + date[5..6] + date[8..9] + '-' + date[11..12] + date[14..15]
-		echo "version " + version
+		def buildnumber='v' + date[0..3] + date[5..6] + date[8..9] + '-' + date[11..12] + date[14..15]
+		echo "buildnumber " + buildnumber
 
 		// get maven tool
 		def localRepository = pwd([tmp: true]) + "/mavenRepository"
@@ -82,7 +82,7 @@ node {
             //}
             mvn(localRepository, '-P deployRelease -f ./sites/de.fxworld.generationgap.site/pom.xml install')
             
-            mvn(localRepository, '-P deployRelease -f ./jars/generationgap-maven-plugin/pom.xml deploy -DskipTests')
+            mvn(localRepository, '-P deployRelease -f ./jars/generationgap-maven-plugin/pom.xml deploy -DskipTests -Dbuildnumber='+buildnumber)
 		}
 
 	} catch (err) {

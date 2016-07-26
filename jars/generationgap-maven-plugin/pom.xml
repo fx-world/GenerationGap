@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>generationgap-maven-plugin</artifactId>
-  <version>0.0.1-${version.number}</version>
+  <version>0.0.1-${buildnumber}</version>
   <packaging>maven-plugin</packaging>
 
   <name>generationgap-maven-plugin Maven Plugin</name>
@@ -18,7 +18,8 @@
         <mavenVersion>3.2.1</mavenVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>    
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <buildnumber>SNAPSHOT</buildnumber>  
     </properties>
         
     <dependencies>
@@ -203,13 +204,6 @@
         				<item>timestamp</item>
       				</items>
 				</configuration>
-				<dependencies>
-          			<dependency>
-              			<groupId>org.apache.maven.scm</groupId>
-              			<artifactId>maven-scm-provider-jgit</artifactId>
-                    	<version>1.9.5</version>
-          			</dependency>
-         		</dependencies>
 			</plugin>				
 		</plugins>
         <pluginManagement>
@@ -244,15 +238,6 @@
     </build>
 
 	<profiles>
-		<profile>
-	        <id>normal</id>
-	        <activation>
-	            <activeByDefault>true</activeByDefault>
-	        </activation>
-	        <properties>
-	            <version.number>SNAPSHOT</version.number>
-	        </properties>
-	    </profile>
 		<!-- This profile is used to upload the repo -->	
 		<profile>
 			<id>deployRelease</id>
@@ -262,9 +247,6 @@
       				<url>ftp://fx-world.de/</url>
     			</repository>
   			</distributionManagement>
-  			<properties>
-	            <version.number>v${buildNumber}</version.number>
-	        </properties>
 		</profile>
 	</profiles>  
 </project>
