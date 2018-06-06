@@ -103,12 +103,14 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>1.8</version>
+				<version>1.16</version>
 				<configuration>
 					<verbose>false</verbose>
 					<addSvnKeyWords>false</addSvnKeyWords>
 					<organizationName>fx-world Softwareentwicklung</organizationName>
 					<inceptionYear>2016</inceptionYear>
+					<licenseName>epl20</licenseName>
+        			<licenseResolver>file:///${maven.multiModuleProjectDirectory}/documentation/license</licenseResolver>
 				</configuration>
 				<executions>
 					<execution>
@@ -119,7 +121,7 @@
 						</goals>
 						<phase>process-sources</phase>
 						<configuration>
-							<licenseName>epl_v1</licenseName>
+							<licenseName>epl20</licenseName>
 							<failOnMissingHeader>true</failOnMissingHeader>
 							
 							<canUpdateCopyright>true</canUpdateCopyright>
@@ -176,7 +178,7 @@
 										<artifactId>license-maven-plugin</artifactId>
 										<versionRange>[1.8,)</versionRange>
 										<goals>
-											<goal>update-file-heade</goal>
+											<goal>update-file-header</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -184,6 +186,27 @@
 											<runOnIncremental>true</runOnIncremental>
 										</execute>
 									</action>									
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											license-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.8,)
+										</versionRange>
+										<goals>
+											<goal>
+												update-file-header
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
