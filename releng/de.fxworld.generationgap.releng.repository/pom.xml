@@ -8,7 +8,7 @@
 	</parent>
 
 	<groupId>de.fx-world</groupId>
-	<artifactId>de.fxworld.generationgap.site</artifactId>
+	<artifactId>de.fxworld.generationgap.releng.repository</artifactId>
 	<version>4.4.2-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
   

@@ -4,7 +4,7 @@ Bundle-Name: GenerationGap
 Bundle-SymbolicName: de.fxworld.generationgap;singleton:=true
 Bundle-Version: 4.4.2.qualifier
 Bundle-Vendor: fx-world Softwareentwicklung
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.emf.mwe2.lib,
  org.eclipse.emf.mwe2.language,

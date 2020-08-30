@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>generationgap-maven-plugin</artifactId>
-  <version>0.0.1-${buildnumber}</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>generationgap-maven-plugin Maven Plugin</name>
@@ -15,7 +15,7 @@
   </parent>
 
 	<properties>
-        <mavenVersion>3.2.1</mavenVersion>
+        <mavenVersion>3.6.0</mavenVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -157,6 +157,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
+				<version>${mavenVersion}</version>				
 				<executions>
 					<execution>
 						<id>default-descriptor</id>
@@ -173,7 +174,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
+				<artifactId>maven-surefire-plugin</artifactId>				
 				<configuration>
           			<includes>
 			            <include>**/*Test.java</include>
@@ -219,7 +220,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>3.2</version>
+                    <!-- <version>3.2</version> -->
                     <executions>
                         <execution>
                             <id>mojo-descriptor</id>

@@ -33,22 +33,12 @@
 	</scm>
 
 	<properties>
-		<tycho-version>0.23.1</tycho-version>
+		<tycho-version>2.0.0</tycho-version>
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/r/p/egit/egit.git</tycho.scmUrl>
+		<mavenVersion>3.6.0</mavenVersion>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	    <maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>mars</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars</url>
-		</repository>
-		<repository>
-			<id>horizon</id>
-			<layout>p2</layout>
-			<url>http://horizon.fx-world.de</url>
-		</repository>
-	</repositories>
 
 	<build>
 		<plugins>
@@ -86,6 +76,38 @@
 				</dependencies>
 			</plugin>
 
+<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>de.fx-world</groupId>
+							<artifactId>de.fxworld.generationgap.releng.targetplatform</artifactId>
+							<version>4.4.2-SNAPSHOT</version>
+						</artifact>
+					</target>
+					<environments>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
@@ -103,14 +125,13 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>1.16</version>
+				<version>2.0.0</version>
 				<configuration>
 					<verbose>false</verbose>
 					<addSvnKeyWords>false</addSvnKeyWords>
 					<organizationName>fx-world Softwareentwicklung</organizationName>
-					<inceptionYear>2016</inceptionYear>
-					<licenseName>epl20</licenseName>
-        			<licenseResolver>file:///${maven.multiModuleProjectDirectory}/documentation/license</licenseResolver>
+					<inceptionYear>2020</inceptionYear>
+					<licenseName>epl_v2</licenseName>        			
 				</configuration>
 				<executions>
 					<execution>
@@ -121,7 +142,7 @@
 						</goals>
 						<phase>process-sources</phase>
 						<configuration>
-							<licenseName>epl20</licenseName>
+							<licenseName>epl_v2</licenseName>
 							<failOnMissingHeader>true</failOnMissingHeader>
 							
 							<canUpdateCopyright>true</canUpdateCopyright>
@@ -186,28 +207,7 @@
 											<runOnIncremental>true</runOnIncremental>
 										</execute>
 									</action>									
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											license-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.8,)
-										</versionRange>
-										<goals>
-											<goal>
-												update-file-header
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
+								</pluginExecution>								
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -219,11 +219,12 @@
 	<modules>
 		<module>plugins/de.fxworld.generationgap</module>
 		<module>features/de.fxworld.generationgap-feature</module>
-		<module>features/de.fxworld.generationgap.headless-feature</module>
-		<module>sites/de.fxworld.generationgap.site</module>
+		<module>features/de.fxworld.generationgap.headless-feature</module>		
 		<module>plugins/de.fxworld.generationgap.ui</module>
 		<module>jars/generationgap-maven-plugin</module>
 		<module>plugins/de.fxworld.generationgap.core</module>
 		<module>plugins/de.fxworld.generationgap.core.tests</module>
+		<module>releng/de.fxworld.generationgap.releng.repository</module>
+		<module>releng/de.fxworld.generationgap.releng.targetplatform</module>
 	</modules>
 </project>
