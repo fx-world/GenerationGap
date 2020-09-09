@@ -5,9 +5,9 @@ node() {
    
    stage('Vorbereitung') {
 				  
-		mvnHome = tool 'Maven353'
+		mvnHome = tool 'Maven35'
 		branch = env.BRANCH_NAME
-		version = "1.0.3.$BUILD_NUMBER-$branch"		
+		version = "1.0.4.$BUILD_NUMBER"		
 		  
 		echo "Version: ${inniusVersion}"
 		echo "Branch: ${inniusBranch}"
