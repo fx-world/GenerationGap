@@ -34,42 +34,6 @@
 					<includeAllDependencies>false</includeAllDependencies>
 				</configuration>
 			</plugin>
-			
-			<plugin>
-        		<groupId>org.eclipse.tycho.extras</groupId>
-        		<artifactId>tycho-p2-extras-plugin</artifactId>
-        		<version>${tycho-version}</version>
-        		
-        		<executions>
-	                <execution>
-	                    <phase>prepare-package</phase>
-	                    <goals>
-	                        <goal>mirror</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
-	            
-	            <configuration>
-	                <source>	                
-	                    <repository>
-	                        <url>/apache/www/updates/generationgap</url>
-	                        <layout>p2</layout>
-	                    </repository>
-						<repository>						
-	                        <url>${project.baseUri}/target/repository</url>
-	                        <layout>p2</layout>
-	                    </repository>	                    
-	                </source>
-	               
-	                <destination>${project.build.directory}/mergedNightlyRepository</destination>
-
-	                <includeOptional>true</includeOptional>
-	                <!-- Whether or not to follow non-greedy requirements. -->
-	                <includeNonGreedy>true</includeNonGreedy>
-	                <append>true</append>
-	                <ignoreErrors>true</ignoreErrors>
-	            </configuration>
-        	</plugin>
 	 	</plugins>
 	</build>
 
@@ -79,7 +43,7 @@
 			<id>deployNightly</id>
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
-				<oldrepo.path>/apache/www/updates/generationgap</oldrepo.path>				
+				<oldrepo.path>/apache/www/html/updates/generationgap</oldrepo.path>				
 				<ftp.url>file:///</ftp.url>
 				<ftp.toDir>${oldrepo.path}</ftp.toDir>
 				<!-- Relative path to the repo being uploaded -->
@@ -104,10 +68,10 @@
 			            
 			            <configuration>
 			                <source>	                
-			                    <!-- <repository>
+			                    <repository>
 			                        <url>${oldrepo.path}</url>
 			                        <layout>p2</layout>
-			                    </repository> -->
+			                    </repository>
 								<repository>						
 			                        <url>${project.baseUri}/target/repository</url>
 			                        <layout>p2</layout>
@@ -156,7 +120,7 @@
 				<!-- Properties relative to the distant host where to upload the repo -->
 				<ftp.url>sftp://fx-world.de</ftp.url>
 				<ftp.toDir>/generationgap</ftp.toDir>				
-				<oldrepo.path>/apache/www/html/updates/generationgap</oldrepo.path>
+				<oldrepo.path>http://updates.fx-world.de/generationgap</oldrepo.path>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
 			</properties>
