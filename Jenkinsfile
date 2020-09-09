@@ -6,7 +6,7 @@ node() {
    stage('Vorbereitung') {
 				  
 		mvnHome = tool 'Maven35'
-		branch = env.BRANCH_NAME
+		branch = 'master'
 		version = "1.0.4.$BUILD_NUMBER"		
 		  
 		echo "Version: ${version}"
