@@ -14,7 +14,7 @@ node() {
 		echo "Maven: ${mvnHome}"
 
 		// Get some code from a GitHub repository
-		//git branch: "${branch}", credentialsId: '26f2ceaa-8291-42cc-8656-38d5d7859226', url: 'https://github.com/fx-world/GenerationGap.git'
+		git branch: "${branch}", credentialsId: '41cdca34-1537-4179-901d-ed553d37db44', url: 'https://github.com/fx-world/GenerationGap.git'
       
       	if (!isUnix()) {
 			error 'Must build with linux'
