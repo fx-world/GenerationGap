@@ -23,7 +23,7 @@ node() {
    
 	stage('Maven') {		
     	withEnv(["MVN_HOME=$mvnHome"]) {			
-            sh('"%MVN_HOME%/bin/mvn" -Dmaven.test.failure.ignore clean package')                        
+            sh('"${MVN_HOME}/bin/mvn" -Dmaven.test.failure.ignore clean package')                        
       	}
 	}
 	  
@@ -32,7 +32,7 @@ node() {
 		archiveArtifacts '**/target/*site*.zip'
 		
 		withEnv(["MVN_HOME=$mvnHome"]) {			
-            sh('"%MVN_HOME%/bin/mvn" -Dmaven.test.failure.ignore -P deployNightly install')                        
+            sh('"${MVN_HOME}/bin/mvn" -Dmaven.test.failure.ignore -P deployNightly install')                        
       	}
    	}
    	
@@ -50,7 +50,7 @@ node() {
 		
 		if (doRelease == true) {
 			withEnv(["MVN_HOME=$mvnHome"]) {			
-	            sh('"%MVN_HOME%/bin/mvn" -Dmaven.test.failure.ignore -P deployRelease install')                        
+	            sh('"${MVN_HOME}/bin/mvn" -Dmaven.test.failure.ignore -P deployRelease install')                        
 	      	}
 	      	
 	      	// mvn(localRepository, '-P deployRelease -f ./jars/generationgap-maven-plugin/pom.xml deploy -DskipTests -Dbuildnumber='+buildnumber)
