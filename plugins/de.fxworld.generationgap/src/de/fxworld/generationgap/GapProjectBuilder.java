@@ -23,31 +23,12 @@ package de.fxworld.generationgap;
  *    itemis AG - exemplary code
  *    fx-world Softwareentwicklung - initial implementation
  */
+import java.util.*;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 
 public class GapProjectBuilder extends IncrementalProjectBuilder {
 
@@ -79,6 +60,7 @@ public class GapProjectBuilder extends IncrementalProjectBuilder {
 		
 		try {
 			delta.accept(new IResourceDeltaVisitor() {
+				@Override
 				public boolean visit(IResourceDelta delta) {
 					
 					IResource resource = delta.getResource();

@@ -19,6 +19,11 @@
 				<artifactId>wagon-ftp</artifactId>
 				<version>2.10</version>
 			</extension>
+			<extension>
+    			<groupId>org.apache.maven.wagon</groupId>
+    			<artifactId>wagon-ssh</artifactId>
+    			<version>3.4.1</version>
+			</extension>
 		</extensions>
 		<plugins>
 			<plugin>
@@ -29,6 +34,42 @@
 					<includeAllDependencies>false</includeAllDependencies>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+        		<groupId>org.eclipse.tycho.extras</groupId>
+        		<artifactId>tycho-p2-extras-plugin</artifactId>
+        		<version>${tycho-version}</version>
+        		
+        		<executions>
+	                <execution>
+	                    <phase>prepare-package</phase>
+	                    <goals>
+	                        <goal>mirror</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	            
+	            <configuration>
+	                <source>	                
+	                    <repository>
+	                        <url>/apache/www/updates/generationgap</url>
+	                        <layout>p2</layout>
+	                    </repository>
+						<repository>						
+	                        <url>${project.baseUri}/target/repository</url>
+	                        <layout>p2</layout>
+	                    </repository>	                    
+	                </source>
+	               
+	                <destination>${project.build.directory}/mergedNightlyRepository</destination>
+
+	                <includeOptional>true</includeOptional>
+	                <!-- Whether or not to follow non-greedy requirements. -->
+	                <includeNonGreedy>true</includeNonGreedy>
+	                <append>true</append>
+	                <ignoreErrors>true</ignoreErrors>
+	            </configuration>
+        	</plugin>
 	 	</plugins>
 	</build>
 
@@ -38,14 +79,51 @@
 			<id>deployNightly</id>
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>ftp://fx-world.de</ftp.url>
-				<ftp.toDir>/nightly/generationgap</ftp.toDir>
+				<oldrepo.path>/apache/www/updates/generationgap</oldrepo.path>				
+				<ftp.url>file:///</ftp.url>
+				<ftp.toDir>${oldrepo.path}</ftp.toDir>
 				<!-- Relative path to the repo being uploaded -->
-				<repo.path>${project.build.directory}/repository/</repo.path>
+				<repo.path>${project.build.directory}/mergedRepository/</repo.path>
 			</properties>
 
 			<build>
 				<plugins>
+					<plugin>
+		        		<groupId>org.eclipse.tycho.extras</groupId>
+		        		<artifactId>tycho-p2-extras-plugin</artifactId>
+		        		<version>${tycho-version}</version>
+		        		
+		        		<executions>
+			                <execution>
+			                    <phase>install</phase>
+			                    <goals>
+			                        <goal>mirror</goal>
+			                    </goals>
+			                </execution>
+			            </executions>
+			            
+			            <configuration>
+			                <source>	                
+			                    <!-- <repository>
+			                        <url>${oldrepo.path}</url>
+			                        <layout>p2</layout>
+			                    </repository> -->
+								<repository>						
+			                        <url>${project.baseUri}/target/repository</url>
+			                        <layout>p2</layout>
+			                    </repository>	                    
+			                </source>
+			               
+			                <destination>${repo.path}</destination>
+		
+			                <includeOptional>true</includeOptional>
+			                <!-- Whether or not to follow non-greedy requirements. -->
+			                <includeNonGreedy>true</includeNonGreedy>
+			                <append>true</append>
+			                <ignoreErrors>true</ignoreErrors>
+			            </configuration>
+		        	</plugin>
+		        	
 					<!-- Upload the repo to the server -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -76,14 +154,50 @@
 			<id>deployRelease</id>
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>ftp://fx-world.de</ftp.url>
-				<ftp.toDir>/generationgap</ftp.toDir>
+				<ftp.url>sftp://fx-world.de</ftp.url>
+				<ftp.toDir>/generationgap</ftp.toDir>				
+				<oldrepo.path>/apache/www/html/updates/generationgap</oldrepo.path>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
 			</properties>
 
 			<build>
 				<plugins>
+					<plugin>
+		        		<groupId>org.eclipse.tycho.extras</groupId>
+		        		<artifactId>tycho-p2-extras-plugin</artifactId>
+		        		<version>${tycho-version}</version>
+		        		
+		        		<executions>
+			                <execution>
+			                    <phase>install</phase>
+			                    <goals>
+			                        <goal>mirror</goal>
+			                    </goals>
+			                </execution>
+			            </executions>
+			            
+			            <configuration>
+			                <source>	                
+			                    <repository>
+			                        <url>${oldrepo.path}</url>
+			                        <layout>p2</layout>
+			                    </repository>
+								<repository>						
+			                        <url>${project.baseUri}/target/repository</url>
+			                        <layout>p2</layout>
+			                    </repository>	                    
+			                </source>
+			               
+			                <destination>${repo.path}</destination>
+		
+			                <includeOptional>true</includeOptional>
+			                <!-- Whether or not to follow non-greedy requirements. -->
+			                <includeNonGreedy>true</includeNonGreedy>
+			                <append>true</append>
+			                <ignoreErrors>true</ignoreErrors>
+			            </configuration>
+		        	</plugin>
 					<!-- Upload the repo to the server -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
