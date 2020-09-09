@@ -9,16 +9,16 @@ node() {
 		branch = env.BRANCH_NAME
 		version = "1.0.4.$BUILD_NUMBER"		
 		  
-		echo "Version: ${inniusVersion}"
-		echo "Branch: ${inniusBranch}"
+		echo "Version: ${version}"
+		echo "Branch: ${branch}"
 		echo "Maven: ${mvnHome}"
 
 		// Get some code from a GitHub repository
 		//git branch: "${branch}", credentialsId: '26f2ceaa-8291-42cc-8656-38d5d7859226', url: 'https://github.com/fx-world/GenerationGap.git'
       
-      	//if (isUnix()) {
-		//	error 'Muss unter Windows laufen'
-		//}
+      	if (!isUnix()) {
+			error 'Must build with linux'
+		}
    }
    
 	stage('Maven') {		
